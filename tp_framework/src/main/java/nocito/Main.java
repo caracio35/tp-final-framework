@@ -8,8 +8,16 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String configFilePath = "/home/jose/Escritorio/tp final framework/tp_framework/src/main/resources/config.json";
         // Usa el ClassLoader para obtener el archivo de configuración desde resources
+        String configFilePath = Main.class.getClassLoader()
+                .getResource(
+                        "\\home\\jose\\Escritorio\\tp_final_framework\\tp_framework\\src\\main\\resources\\config.json")
+                .getPath();
+
+        if (configFilePath == null) {
+            System.out.println("No se pudo encontrar el archivo de configuración config.json en el classpath.");
+            return;
+        }
 
         Framework framework = new Framework(configFilePath);
 
