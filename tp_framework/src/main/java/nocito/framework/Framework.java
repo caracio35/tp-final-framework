@@ -1,16 +1,15 @@
 package nocito.framework;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputFilter.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 
 public class Framework {
     private List<Accion> acciones = new ArrayList<>();
@@ -24,16 +23,26 @@ public class Framework {
     private void cargarConfiguraciones(String configPath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Configuracion configfiguracion = mapper.readValue(new File(configPath), Configuracion.class);
-            for (String accionClassName : configfiguracion.getAcciones()) {
-                Class<?> clazz = Class.forName(accionClassName);
-                Accion accion = (Accion) clazz.getDeclaredConstructor().newInstance();
-                acciones.add(accion);
-            }
-            this.maxThreads = configfiguracion.getMaxThreads();
-        } catch (IOException | ReflectiveOperationException e) {
-            throw new RuntimeException("Error al cargar la configuracion" + e.getMessage(), e);
+            JsonNode root = mapper.readTree(new File(configPath));
+            JsonNode accionesNode = root.path("acciones");
+            JsonNode maxThreadsNode = root.path("max-threads");
 
+            maxThreads = maxThreadsNode.asInt();
+
+            for (JsonNode accionNode : accionesNode) {
+                String accionClassName = accionNode.asText();
+                try {
+                    Class<?> accionClass = Class.forName(accionClassName);
+                    Accion accion = (Accion) accionClass.getDeclaredConstructor().newInstance();
+                    acciones.add(accion);
+                } catch (Exception e) {
+                    System.out.println("Error cargando la clase: " + accionClassName);
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error leyendo el archivo de configuración: " + configPath);
+            e.printStackTrace();
         }
     }
 
