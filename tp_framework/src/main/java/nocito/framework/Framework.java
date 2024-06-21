@@ -59,7 +59,7 @@ public class Framework {
         boolean salir = false;
 
         while (!salir) {
-            System.out.println("Seleccione una o más acciones separadas por espacio:");
+            System.out.println("\n Seleccione una o más acciones separadas por espacio:");
             for (int indiceMenu : indiceAccionMap.keySet()) {
                 int indiceAccion = indiceAccionMap.get(indiceMenu);
                 System.out.println(indiceMenu + ": " + acciones.get(indiceAccion).getClass().getSimpleName());
@@ -101,8 +101,16 @@ public class Framework {
         System.out.println("Saliendo del programa...");
     }
 
-    public void ejecutarAcciones(List<Integer> indices) {
+    private void ejecutarAcciones(List<Integer> indices) {
         ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+        // executor.invokeAll(indices.stream().map(i -> new Callable<Void>() {
+        // @Override
+        // public Void call() {
+        // acciones.get(i).ejecutar();
+        // return null;
+        // }
+        // }).collect(Collectors.toList()));
+
         try {
             for (int index : indices) {
                 if (index >= 0 && index < acciones.size()) {

@@ -2,8 +2,7 @@
     "acciones": [
         "nocito.utilizacion.AccionUno",
         "nocito.utilizacion.AccionDos",
-        "nocito.utilizacion.AccionTres",
-        "nocito.utilizacion.accionCuatro"
+        "nocito.utilizacion.AccionTres"
     ],
-    "max-threads": 3
+    "max-threads": 4
 }
