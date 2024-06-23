@@ -11,11 +11,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Framework {
     private List<Accion> acciones = new ArrayList<>();
     private int maxThreads;
     private Map<Integer, Integer> indiceAccionMap = new HashMap<>();
+    boolean salir = false;
 
     public Framework(String configPath) {
         cargarConfiguraciones(configPath);
@@ -56,7 +58,6 @@ public class Framework {
 
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
-        boolean salir = false;
 
         while (!salir) {
             System.out.println("\n Seleccione una o más acciones separadas por espacio:");
@@ -103,28 +104,36 @@ public class Framework {
 
     private void ejecutarAcciones(List<Integer> indices) {
         ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
-        // executor.invokeAll(indices.stream().map(i -> new Callable<Void>() {
-        // @Override
-        // public Void call() {
-        // acciones.get(i).ejecutar();
-        // return null;
-        // }
-        // }).collect(Collectors.toList()));
-
-        try {
-            for (int index : indices) {
-                if (index >= 0 && index < acciones.size()) {
-                    Accion accion = acciones.get(index);
-                    executor.submit(() -> {
-                        accion.ejecutar();
-                        return null;
-                    });
-                } else {
-                    System.out.println("Índice de acción fuera de rango: " + index);
-                }
+        List<AccionAdapter> adaptados = new ArrayList<>();
+        for (Integer i : indices) {
+            if (i < acciones.size()) {
+                adaptados.add(new AccionAdapter(acciones.get(i)));
+            } else {
+                System.out.println("saliendo del programa " + i);
+                salir = true;
             }
-        } finally {
-            executor.shutdown();
+        }
+        try {
+            executor.invokeAll(adaptados);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 }
+// executor.invokeAll(indices.stream().map(i -> new Callable<Void>() {
+
+// try {
+// for (int index : indices) {
+// if (index >= 0 && index < acciones.size()) {
+// Accion accion = acciones.get(index);
+// executor.submit(() -> {
+// accion.ejecutar();
+// return null;
+// });
+// } else {
+// System.out.println("Índice de acción fuera de rango: " + index);
+// }
+// }
+// } finally {
+// executor.shutdown();
+// }

@@ -4,5 +4,5 @@
         "nocito.utilizacion.AccionDos",
         "nocito.utilizacion.AccionTres"
     ],
-    "max-threads": 4
+    "max-threads": 2
 }

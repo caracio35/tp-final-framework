@@ -14,4 +14,12 @@ public class AccionAdapter implements Callable<Void> {
         accion.ejecutar();
         return null;
     }
+
+    public void setAccion(Accion accion) {
+        this.accion = accion;
+    }
+
+    public Accion getAccion() {
+        return accion;
+    }
 }
