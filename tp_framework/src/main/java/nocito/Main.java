@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         Framework framework = new Framework(
-                "/home/jose/Escritorio/tp_final_framework/tp_framework/src/main/resources/config.json");
+                "/Users/josehoracionocito/Documents/objeto/tp-final-framework/tp_framework/src/main/resources/config.json");
 
         // Simular selección de acciones desde el menú
         // Scanner scanner = new Scanner(System.in);
